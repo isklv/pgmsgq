@@ -124,7 +124,7 @@ func (q *Queue) nackMessage(ctx context.Context, id int64, retryCount int, reaso
 	updatedAt := time.Now().Add(delay)
 
 	table := q.tableName()
-	const updateQuery = `
+	updateQuery := `
 		UPDATE ` + table + `
 		SET retry_count = $1, updated_at = $2, status = 'delayed'
 		WHERE id = $3 AND queue_name = $4 AND retry_count < max_retries
@@ -139,7 +139,7 @@ func (q *Queue) nackMessage(ctx context.Context, id int64, retryCount int, reaso
 		return nil
 	}
 
-	if pgx.ErrNoRows.Equal(err) {
+	if errors.Is(err, pgx.ErrNoRows) {
 		// Max retries reached → DLQ
 		if err := q.dlq.inner.Insert(ctx, q.name, nil, reason, id); err != nil {
 			return fmt.Errorf("dlq insert: %w", err)

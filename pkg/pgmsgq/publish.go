@@ -5,9 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-
-	"github.com/jackc/pgx/v5"
-	"github.com/isklv/pgmsgq/internal/pg"
 )
 
 // Publish sends a message to the queue.
@@ -56,7 +53,7 @@ func (q *Queue) Publish(ctx context.Context, payload any, opts ...PublishOption)
 		return err
 	}
 
-	rows, _ := res.RowsAffected()
+	rows := res.RowsAffected()
 	if rows == 0 && options.DedupID != "" {
 		q.cfg.Metrics.OnDedup(q.name)
 		return nil
@@ -95,7 +92,7 @@ func (q *Queue) BatchPublish(ctx context.Context, payloads []any, opts ...Publis
 	defer tx.Rollback(ctx)
 
 	table := q.tableName()
-	stmt, err := tx.Prepare(ctx, "batch_insert",
+	_, err = tx.Prepare(ctx, "batch_insert",
 		`INSERT INTO `+table+`
 			(queue_name, payload, priority, max_retries, dedup_id)
 			VALUES ($1, $2, $3, $4, $5)
@@ -104,7 +101,6 @@ func (q *Queue) BatchPublish(ctx context.Context, payloads []any, opts ...Publis
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
 
 	for _, p := range payloads {
 		data, err := encodePayload(p)

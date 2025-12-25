@@ -37,7 +37,7 @@ type Config struct {
 	DefaultTimeout time.Duration
 
 	// Metrics implementation. Default: Prometheus via metrics.Default.
-	Metrics Metrics
+	Metrics *metrics.Metrics
 }
 
 // DefaultConfig is the default configuration.
@@ -48,7 +48,7 @@ var DefaultConfig = Config{
 	DelayAfterRetry: 5 * time.Second,
 	BackoffStrategy: backoff.Exponential(2 * time.Second),
 	DefaultTimeout:  30 * time.Second,
-	Metrics:         DefaultMetrics,
+	Metrics:         metrics.DefaultMetrics,
 }
 
 // withDefaults ensures all fields are set.
@@ -64,7 +64,7 @@ func (c *Config) withDefaults() *Config {
 		nc.BackoffStrategy = backoff.Exponential(nc.DelayAfterRetry)
 	}
 	if nc.Metrics == nil {
-		nc.Metrics = DefaultMetrics
+		nc.Metrics = metrics.DefaultMetrics
 	}
 	if nc.MaxRetries == 0 {
 		nc.MaxRetries = 3

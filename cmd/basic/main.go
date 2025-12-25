@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/isklv/pgmsgq/pkg/pgmsgq"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Greeting struct {

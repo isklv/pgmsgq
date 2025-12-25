@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/isklv/pgmsgq/internal/testutil"
 	"github.com/isklv/pgmsgq/pkg/pgmsgq"
 )
@@ -173,7 +172,7 @@ func TestBatch(t *testing.T) {
 
 	ctx := context.Background()
 
-	payloads := []string{"a", "b", "c"}
+	payloads := []any{"a", "b", "c"}
 	err := queue.BatchPublish(ctx, payloads)
 	if err != nil {
 		t.Fatal(err)

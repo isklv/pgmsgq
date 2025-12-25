@@ -4,15 +4,15 @@ import (
 	"context"
 	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Manager struct {
-	db    pgx.Executable
+	db    *pgxpool.Pool
 	table string
 }
 
-func New(db pgx.Executable, table string) *Manager {
+func New(db *pgxpool.Pool, table string) *Manager {
 	return &Manager{db: db, table: table}
 }
 
