@@ -26,7 +26,6 @@ type Message struct {
 }
 
 func (m *Manager) List(ctx context.Context, queue string, limit int) ([]*Message, error) {
-	// ... как раньше, но без Ack/Requeue методов (они в pkg/pgmsgq/dlq.go)
 	rows, err := m.db.Query(ctx,
 		`SELECT id, queue_name, payload, failed_at, error, original_id
 		 FROM `+m.table+`

@@ -129,6 +129,13 @@ func New() *Metrics {
 		SubscribeErrors: prometheus.NewCounter(prometheus.CounterOpts{Name: "pgmsgq_subscribe_errors_total"}),
 		ConsumeErrors:   prometheus.NewCounter(prometheus.CounterOpts{Name: "pgmsgq_consume_errors_total"}),
 
+		OperationsTotal: promauto.NewCounterVec(
+			prometheus.CounterOpts{
+				Name: "operations_total",
+				Help: "Total number of operations",
+			},
+			[]string{"operation_name", "operation_type"},
+		),
 		FailedOperations: promauto.NewCounterVec(
 			prometheus.CounterOpts{
 				Name: "failed_operations_total",
@@ -168,6 +175,20 @@ func New() *Metrics {
 			prometheus.CounterOpts{
 				Name: "dlq_acked_operations_total",
 				Help: "Total number of DLQ acknowledged operations",
+			},
+			[]string{"operation_name"},
+		),
+		PublishedCounter: promauto.NewCounterVec(
+			prometheus.CounterOpts{
+				Name: "published_operations_total",
+				Help: "Total number of publish operations",
+			},
+			[]string{"operation_name"},
+		),
+		PublishedBatchCounter: promauto.NewCounterVec(
+			prometheus.CounterOpts{
+				Name: "published_batch_operations_total",
+				Help: "Total number of publish batch operations",
 			},
 			[]string{"operation_name"},
 		),

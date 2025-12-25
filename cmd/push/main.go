@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/isklv/pgmsgq/pkg/pgmsgq"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Task struct {
@@ -33,6 +33,11 @@ func main() {
 	queue := pgmsgq.New(pool, "tasks", &pgmsgq.Config{
 		PushEnabled: true,
 	})
+
+	if err := queue.InitDB(ctx); err != nil {
+		log.Fatal("Init tables:", err)
+		<-ctx.Done()
+	}
 
 	go queue.StartDelayedReleaser(ctx, 2*time.Second)
 
