@@ -4,15 +4,15 @@ import (
 	"context"
 	"time"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Manager struct {
-	db    pgx.Executable
+	db    *pgxpool.Pool
 	table string
 }
 
-func New(db pgx.Executable, table string) *Manager {
+func New(db *pgxpool.Pool, table string) *Manager {
 	return &Manager{db: db, table: table}
 }
 
@@ -26,7 +26,6 @@ type Message struct {
 }
 
 func (m *Manager) List(ctx context.Context, queue string, limit int) ([]*Message, error) {
-	// ... как раньше, но без Ack/Requeue методов (они в pkg/pgmsgq/dlq.go)
 	rows, err := m.db.Query(ctx,
 		`SELECT id, queue_name, payload, failed_at, error, original_id
 		 FROM `+m.table+`

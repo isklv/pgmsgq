@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/isklv/pgmsgq/internal/pg"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -79,10 +80,6 @@ func (s *Subscription) waitForNotification(ctx context.Context, conn *pgx.Conn) 
 		case <-ctx.Done():
 			return nil, ctx.Err()
 		default:
-		}
-
-		if !conn.IsClosed() {
-			conn.PgConn().ProcessAcknowledgements()
 		}
 
 		notif, err := conn.WaitForNotification(ctx)

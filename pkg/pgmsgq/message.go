@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"sync"
-	"time"
 )
 
 var (
@@ -36,9 +35,9 @@ func newMessage(id int64, payload []byte, retryCount int, q *Queue, ctx context.
 	}
 }
 
-func (m *Message) ID() int64          { return m.id }
-func (m *Message) Payload() []byte    { return m.payload }
-func (m *Message) RetryCount() int    { return m.retryCount }
+func (m *Message) ID() int64              { return m.id }
+func (m *Message) Payload() []byte        { return m.payload }
+func (m *Message) RetryCount() int        { return m.retryCount }
 func (m *Message) DecodeJSON(v any) error { return json.Unmarshal(m.payload, v) }
 
 // Ack confirms successful processing.

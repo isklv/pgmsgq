@@ -12,7 +12,7 @@ migrate:
 	migrate -database "postgresql://postgres:pass@localhost:5432/pgmsgq_test?sslmode=disable" -path migrations up
 
 test:
-	INTEGRATION=1 go test -v ./tests/integration/... -race -cover
+	INTEGRATION=1 CGO_ENABLED=1 go test -v ./tests/integration/... -race -cover
 
 lint:
 	golangci-lint run ./...

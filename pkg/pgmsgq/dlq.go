@@ -2,13 +2,15 @@ package pgmsgq
 
 import (
 	"context"
-	"github.com/isklv/pgmsgq/internal/dlq" as internalDLQ
+
+	internalDLQ "github.com/isklv/pgmsgq/internal/dlq"
+	"github.com/isklv/pgmsgq/internal/metrics"
 )
 
 type dlqManager struct {
 	inner     *internalDLQ.Manager
 	queueName string
-	metrics   *Metrics
+	metrics   *metrics.Metrics
 }
 
 type DLQMessage struct {

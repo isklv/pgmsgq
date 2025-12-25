@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_PASSWORD: pass
     volumes:
-      - pg/var/lib/postgresql/data
+      - pg:/var/lib/postgresql/data
 
 volumes:
-  pg
+  pg:

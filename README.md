@@ -1,3 +1,4 @@
+```
 package main
 
 import (
@@ -94,3 +95,4 @@ func main() {
 	<-ctx.Done()
 	log.Println("🛑 Shutdown...")
 }
+```

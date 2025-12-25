@@ -5,11 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/isklv/pgmsgq/internal/backoff"
 	internalDLQ "github.com/isklv/pgmsgq/internal/dlq"
-	"github.com/isklv/pgmsgq/internal/metrics"
 	"github.com/isklv/pgmsgq/internal/pg"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type atomicBool struct {
@@ -35,12 +33,6 @@ type Queue struct {
 	name   string
 	closed atomicBool
 	dlq    *dlqManager
-}
-
-type dlqManager struct {
-	inner     *internalDLQ.Manager
-	queueName string
-	metrics   Metrics
 }
 
 func New(db *pgxpool.Pool, name string, cfg *Config) *Queue {
