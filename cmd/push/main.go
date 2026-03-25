@@ -24,7 +24,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://postgres:pass@localhost:5432/pgmsgq_test?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://postgres:pass@127.0.0.1:5432/pgmsgq_test?sslmode=disable")
 	if err != nil {
 		log.Fatal("DB connect:", err)
 	}

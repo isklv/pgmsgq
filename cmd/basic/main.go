@@ -22,7 +22,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, "postgres://postgres:pass@localhost:5432/pgmsgq_test?sslmode=disable")
+	pool, err := pgxpool.New(ctx, "postgres://postgres:pass@127.0.0.1:5432/pgmsgq_test?sslmode=disable")
 	if err != nil {
 		log.Fatal("DB connect:", err)
 	}
@@ -41,7 +41,7 @@ func main() {
 	go queue.StartDelayedReleaser(ctx, 3*time.Second)
 
 	// Publish
-	for i := 1; i <= 3; i++ {
+	for i := 1; i <= 10; i++ {
 		g := Greeting{Name: "User" + string(rune('A'+i-1))}
 		if err := queue.Publish(ctx, g,
 			pgmsgq.WithPriority(200),
@@ -51,8 +51,10 @@ func main() {
 		} else {
 			log.Printf("✅ Published: %+v", g)
 		}
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(time.Second)
 	}
+
+	time.Sleep(time.Second * 10)
 
 	// Consume
 	log.Println("👷 Starting consumer...")
@@ -64,7 +66,6 @@ func main() {
 					return
 				}
 				log.Printf("Consume error: %v", err)
-				time.Sleep(time.Second)
 				continue
 			}
 			if msg == nil {

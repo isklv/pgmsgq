@@ -44,27 +44,33 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_pgmsgq_dedup ON %v (dedup_id)
 `
 
 func (q *Queue) InitDB(ctx context.Context) error {
-	_, err := q.db.Query(ctx, fmt.Sprintf(`SELECT 1 FROM %v LIMIT 0`, q.tableName()))
+	var exists bool
+	err := q.db.QueryRow(ctx, fmt.Sprintf(`SELECT EXISTS(SELECT 1 FROM %v LIMIT 1)`, q.tableName())).Scan(&exists)
 	if err != nil {
+		// Table doesn't exist, create it
 		_, err := q.db.Exec(ctx, fmt.Sprintf(createMessageTable, q.tableName()))
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create message table: %w", err)
 		}
+
 		_, err = q.db.Exec(ctx, fmt.Sprintf(createDlqTable, q.cfg.TablePrefix+"dlq"))
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create DLQ table: %w", err)
 		}
+
 		_, err = q.db.Exec(ctx, fmt.Sprintf(createMessageIndex, q.tableName()))
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create pending index: %w", err)
 		}
+
 		_, err = q.db.Exec(ctx, fmt.Sprintf(createMessageDelayedIndex, q.tableName()))
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create delayed index: %w", err)
 		}
+
 		_, err = q.db.Exec(ctx, fmt.Sprintf(createMessageDedupIndex, q.tableName()))
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create dedup index: %w", err)
 		}
 	}
 	return nil

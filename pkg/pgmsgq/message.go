@@ -80,3 +80,7 @@ func (m *Message) setAcked() {
 	defer m.ackedMu.Unlock()
 	m.acked = true
 }
+
+func (m *Message) Cancel() {
+	m.cancel()
+}
