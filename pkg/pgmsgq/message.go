@@ -24,7 +24,7 @@ type Message struct {
 	cancel     context.CancelFunc
 }
 
-func newMessage(id int64, payload []byte, retryCount int, q *Queue, ctx context.Context, cancel context.CancelFunc) *Message {
+func NewMessage(id int64, payload []byte, retryCount int, q *Queue, ctx context.Context, cancel context.CancelFunc) *Message {
 	return &Message{
 		id:         id,
 		payload:    payload,

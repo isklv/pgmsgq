@@ -69,7 +69,7 @@ func (q *Queue) Consume(ctx context.Context) (*Message, error) {
 		return nil, err
 	}
 
-	return newMessage(id, payload, retryCount, q, msgCtx, cancel), nil
+	return NewMessage(id, payload, retryCount, q, msgCtx, cancel), nil
 }
 
 // BatchConsume retrieves up to `limit` messages.
@@ -101,7 +101,7 @@ func (q *Queue) BatchConsume(ctx context.Context, limit int) ([]*Message, error)
 			cancel()
 			return nil, err
 		}
-		msgs = append(msgs, newMessage(id, payload, retryCount, q, msgCtx, func() {}))
+		msgs = append(msgs, NewMessage(id, payload, retryCount, q, msgCtx, func() {}))
 	}
 
 	if len(msgs) == 0 {
